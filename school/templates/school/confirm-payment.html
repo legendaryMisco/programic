@@ -1,0 +1,48 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+    <!-- Main Section -->
+    <main class="formPage my-xl">
+        <div class="content-box">
+            <form id="paymentForm">
+            <div class="formWrapper">
+                <a class="backButton" href="{{request.META.HTTP_REFERER}}"><<i class="im im-angle-left"></i></a>
+                <br>
+
+                <p>Proceed to pay {{payment}} for course '{{course}}'</p>
+                <a class="btn btn--sub btn--lg  my-md" href="{{request.META.HTTP_REFERER}}">&#x2190 Go Back</a>
+                <button type="submit" class="btn btn--sub btn--lg  my-md" onclick="payWithPaystack()">Proceed</button>
+
+            </div>
+        </form>
+        </div>
+    </main>
+
+    <script>
+        const paymentForm = document.getElementById('paymentForm');
+        paymentForm.addEventListener("submit", payWithPaystack, false);
+
+        function payWithPaystack(e) {
+            e.preventDefault();
+            let handler = PaystackPop.setup({
+                key: '{{ps_pk}}', // Replace with your public key
+                email: '{{student.email}}',
+                amount: {{payment}} * 100,
+                ref: '' + Math.floor((Math.random() * 1000000000) +
+                1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+                // label: "Optional string that replaces customer email"
+                onClose: function() {
+                    alert('Window closed.');
+                },
+                callback: function(response) {
+                    //let message = 'Payment complete! Reference: ' + response.reference;
+                    //alert(message);
+                    window.location = "{% url 'school:payment-complete' course=course_info.slug %}";  
+                }
+            });
+            handler.openIframe();
+        }
+    </script>
+{% endblock content %}

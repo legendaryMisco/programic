@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+  <!-- Main Section -->
+  <main class="inbox my-xl">
+    <div class="content-box">
+<h3 class="inbox__title">New Messages(<span>{{total_unread}}</span>) </h3>
+      <ul class="messages">
+        
+        {% for message in notification %}
+        {% if request.user.student not in message.read.all %}
+        <li class="message message--unread">
+          <a href="{% url 'school:single-notification' pk=message.id %}">
+            <span class="message__author">Programic</span>
+            <span class="message__subject">{{message.subject}}</span>
+            <span class="message__date">{{message.date|date}}</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="message">
+          <a href="{% url 'school:single-notification' pk=message.id %}">
+            <span class="message__author">Programic</span>
+            <span class="message__subject">{{message.subject}}</span>
+            <span class="message__date">{{message.date|date}}</span>
+          </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </main>
+{% endblock %}

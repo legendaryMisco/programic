@@ -1,0 +1,169 @@
+{% extends 'main2.html' %}
+{% load static %}
+
+{% block content %}
+
+    
+<!-- Header Start -->
+<div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
+    <div class="container text-center py-5">
+        <h1 class="text-white display-1">Course Detail</h1>
+        <div class="d-inline-flex text-white mb-5">
+            <p class="m-0 text-uppercase"><a class="text-white" href="{% url 'school:home' %}">Home</a></p>
+            <i class="fa fa-angle-double-right pt-1 px-3"></i>
+            <p class="m-0 text-uppercase">Course Detail</p>
+        </div>
+        
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Detail Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-5">
+                    <div class="section-title position-relative mb-5">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Course Detail
+                        </h6>
+                        <h1 class="display-4">{{course.course}}</h1>
+                    </div>
+                    <img class="img-fluid rounded w-100 mb-4" src="{{course.course_cover.url}}" alt="Image">
+                    <p>{{course.about|linebreaks}}</p>
+                </div>
+                
+                <h2 class="mb-3">Related Courses</h2>
+                <div class="owl-carousel related-carousel position-relative" style="padding: 0 30px;">
+                    
+                    
+                    {% for course in related_courses %}
+                        
+                        
+
+                    <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{% url 'school:single-course' slug=course.slug %}">
+                        <img class="img-fluid" src="{{course.course_cover.url}}" alt="">
+                        <div class="courses-text">
+                            <h4 class="text-center text-white px-3">{{course.course}}</h4>
+                            <div class="border-top w-100 mt-3">
+                                <div class="d-flex justify-content-between p-4">
+                                    <span class="text-white"><i class="fa fa-user mr-2"></i>olamide</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    {% endfor %}
+                    
+                </div>
+            </div>
+
+            <div class="col-lg-4 mt-5 mt-lg-0">  
+                
+                <div class="bg-primary mb-5 py-3">
+                    <h3 class="text-white py-3 px-4 m-0">Course Features</h3>
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        <h6 class="text-white my-3">Instructor</h6>
+                        <h6 class="text-white my-3">Olamide</h6>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        <h6 class="text-white my-3">Lectures</h6>
+                        <h6 class="text-white my-3">{{lectures.total}}</h6>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        <h6 class="text-white my-3">Duration</h6>
+                        <h6 class="text-white my-3">{{duration.mins}} Mins</h6>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        <h6 class="text-white my-3">Skill level</h6>
+                        <h6 class="text-white my-3">All Level</h6>
+                    </div>
+                    <div class="d-flex justify-content-between px-4">
+                        <h6 class="text-white my-3">Language</h6>
+                        <h6 class="text-white my-3">English</h6>
+                    </div>
+                    <h5 class="text-white py-3 px-4 m-0">Course Price: &#8358; {{course.price}}</h5>
+
+                    {% if request.user.is_authenticated is False %}
+                    <a  class="btn btn-block btn-secondary py-3 px-5" href="{% url 'school:login' %}?next={% url 'school:single-course' slug=course.slug %} ">Login to Enroll</a>
+                    {% elif student.id in course.have_paid %}
+                    <a  class="btn btn-block btn-secondary py-3 px-5" href="{% url 'school:cvp' course=course.slug  %}">Start Learning</a>
+                    {% else %}
+                  <form action="{% url 'school:single-course' slug=course.slug %}" method='post'>
+                        {% csrf_token %}
+                        <input type='hidden' name='course-name' value='{{course.course}}' >
+                        <input type='hidden' name='course-price' value='{{course.price}}' >
+                        <button type='submit' class="btn btn-block btn-secondary py-3 px-5" >Enroll Now</button>
+                    
+                <form>
+                    {% endif %}
+                        
+
+                </div>
+
+                
+                
+                <div class="mb-5">
+                    
+                    <h2 class="mb-4">Recent Courses</h2>
+
+                    
+                    {% for course in related_courses %}
+                        
+
+                    <a class="d-flex align-items-center text-decoration-none mb-4" href="{% url 'school:single-course' slug=course.slug %}">
+                        <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
+                        <div class="pl-3">
+                            <h6>{{course.course}}</h6>
+                            <div class="d-flex">
+                                <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>olamide</small>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    {% endfor %}
+                    
+                    {% if student.id in course.have_paid and student.id in certificaterequests %}
+                    <button class="btn btn-light btn-secondary py-3 px-5" style="cursor:not-allowed;" >Certificate Requested</button>
+                    {% elif student.id in course.have_paid and student.id not in certificaterequests %}
+                    <a href="{% url 'school:certificate-request' course=course.slug %}" class="btn btn-block btn-secondary py-3 px-5" >Request For A  Certificate</a>
+                    {% else %}
+                    
+                    {% endif %}
+                        
+                    
+                        
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center bg-image mx-0 mb-5">
+        <div class="col-lg-6 py-5">
+            <div class="bg-white p-5 my-5">
+                <h1 class="text-center mb-4">Q&A</h1>
+                <h5>Ask question and answer will be send to you directly into your notification</h5>
+                <center><h1>Opening Soon</h1></center>
+                {% comment %} <form method='get'>
+                    <div class="form-row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <textarea type="text" name='question' class="form-control bg-light border-0" placeholder="Ask your question" style="padding: 30px 20px;"></textarea>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="form-row">
+                        
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary btn-block" type="submit" style="height: 60px;">Submit</button>
+                        </div>
+                    </div>
+                </form> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Detail End -->
+{% endblock content %}

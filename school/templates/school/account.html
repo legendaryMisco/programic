@@ -1,0 +1,79 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+
+<!-- Main Section -->
+<main class="settingsPage profile my-md">
+  <div class="container">
+    <div class="layout">
+      <div class="column column--1of3">
+        <div class="card text-center">
+          <div class="card__body dev">
+            <a class="tag tag--pill tag--main settings__btn" href="{% url 'school:edit-account' %}"><<i class="im im-edit"></i> Edit</a>
+            <img class="avatar avatar--xl dev__avatar" src="{{student.display_profile_image}}" />
+            <h2 class="dev__name">{{student.first_name}} {{student.last_name}}</h2>
+            <p class="dev__title">{{student.username}}</p>
+            <p class="dev__location">Based in Florida, USA</p>
+          </div>
+        </div>
+      </div>
+      <div class="column column--2of3">
+        <div class="devInfo">
+          <h3 class="devInfo__title">About Me</h3>
+          <p class="devInfo__about">
+           {{student.bio|linebreaks}}
+          </p>
+        </div>
+        <div class="settings">
+          <h3 class="settings__title">Lectures</h3>
+        </div>
+
+        <table class="settings__table">
+          
+          {% for course in paid_courses %}
+          <tr>
+            <td class="settings__thumbnail">
+              <a href="{% url 'school:single-course' slug=course.course_id.slug %}"><img src="{{course.course_id.course_cover.url}}" alt="Project Thumbnail" /></a>
+            </td>
+            <td class="settings__tableInfo">
+              <a href="{% url 'school:single-course' slug=course.course_id.slug %}">{{course.course_id.course}}</a>
+              <p>
+                {{course.course_id.about|truncatechars:'100'}}
+              </p>
+            </td>
+            
+          </tr>
+         
+          
+          {% endfor %}
+          
+        </table>
+
+        <div class="settings">
+          <h3 class="settings__title">Recommended Courses</h3>
+        </div>
+
+        <table class="settings__table">
+          {% for course in recommended_courses %}
+          <tr>
+            <td class="settings__thumbnail">
+              <a href="{% url 'school:single-course' slug=course.slug %}"><img src="{{course.course_cover.url}}" alt="Project Thumbnail" /></a>
+            </td>
+            <td class="settings__tableInfo">
+              <a href="{% url 'school:single-course' slug=course.slug %}">{{course.course}}</a>
+              <p>
+                {{course.about|truncatechars:'100'}}
+              </p>
+            </td>
+            
+          </tr>
+         
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}

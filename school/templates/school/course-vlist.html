@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{course.course}} - Videos  | Programic</title>
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+</head>
+
+<body>
+    <main class="container">
+        <section class="main-video">
+            <video src="" controls type='video/mp4' autoplay width="548" height="308" poster="{{course.course_cover.url}}"></video>
+            <h3 class="title">Play a video to start</h3>
+        </section>
+
+        <section class="video-playlist">
+            <h3 class="title">{{course.course}}</h3>
+            <p>{{lessons}} Lessons &nbsp; . &nbsp; {{duration.hrs}}h {{duration.mins}}m</p>
+            <div class="videos">
+
+            </div>
+        </section>
+    </main>
+    <script>
+        const main_video = document.querySelector('.main-video video');
+        const main_video_title = document.querySelector('.main-video .title');
+        const video_playlist = document.querySelector('.video-playlist .videos');
+        let data = [
+            {% for coursevideo in course.coursevideo_set.all %}
+            {
+                'id': '{{coursevideo.id}}',
+                'title': '{{coursevideo.title}}',
+                'name': '{{coursevideo.video}}',
+                'session': '{{coursevideo.course_sid.session_name}}',
+                'duration': '{{coursevideo.duration}}',
+            },
+            {% endfor %}
+            
+        ];
+        data.forEach((video, i) => {
+            let video_element = `
+                <h5 style='color:grey;'>topic: ${video.session}</h5>
+                <div class="video" data-id="${video.id}">
+                    <img src="{% static 'images/play.svg' %}" alt="">
+                    <p>{{forloop.counter}}</p>
+                    <h3 class="title">${video.title}</h3>
+                    <p class="time">${video.duration}</p>
+                </div>
+    `;
+            video_playlist.innerHTML += video_element;
+        })
+        let videos = document.querySelectorAll('.video');
+        videos[0].classList.add('active');
+        videos.forEach(selected_video => {
+            selected_video.onclick = () => {
+                for (all_videos of videos) {
+                    all_videos.classList.remove('active');
+                    all_videos.querySelector('img').src = "{% static 'images/play.svg' %}";
+                }
+                selected_video.classList.add('active');
+                selected_video.querySelector('img').src = "{% static 'images/pause.svg' %}";
+                let match_video = data.find(video => video.id == selected_video.dataset.id);
+                main_video.src = '/static/images/' + match_video.name;
+                main_video_title.innerHTML = match_video.title;
+            }
+        });
+        
+        
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+{% include 'main.html' %}
+{% load static %}
+{% block context %}
+<br>
+<div class="auth">
+  <div class="card">
+    <div class="auth__header text-center">
+      <a href="/">
+        <img src="{{logo}}" width='20' alt="logo" />
+      </a>
+      <h3>Account SignUp</h3>
+      <p>Create a new student account</p>
+    </div>
+
+    <form method='post' class="form auth__form">
+      {% csrf_token %}
+      
+      
+      {% for field in form %}
+        {{field.label_tag}}
+        {{field}}
+        
+        {% if field.errors %}
+        <ul>
+          <li style="color: red;" >{{field.errors}}</li>
+        </ul>
+            
+          {{field.help_text}}
+          
+        {% endif %}
+          
+      {% endfor %}
+        
+      <div class="auth__actions">
+        <input class="btn btn--sub btn--lg" type="submit" value="Sign  In" />
+      </div>
+    </form>
+    <div class="auth__alternative">
+      <p>Already have an Account?</p>
+      <a href="{% url 'school:login' %}">Log In</a>
+    </div>
+  </div>
+</div>
+{% endblock context %}

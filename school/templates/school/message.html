@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+  <!-- Main Section -->
+  <main class="messagePage my-xl">
+    <div class="content-box">
+      <div class="message">
+        <a class="backButton" href="{{request.META.HTTP_REFERER}}"><<i class="im im-angle-left"></i></a>
+        <h2 class="message__subject">{{message.subject}}</h4>
+          <a  class="message__author">Programic</a>
+          <p class="message__date">{{message.date|date}}</p>
+          <div class="message__body">
+            {{message.message}}
+          </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
